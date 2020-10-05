@@ -1,0 +1,39 @@
+{
+  "private": true,
+  "name": "webpack-typescript-react-starter",
+  "version": "1.0.0",
+  "repository": "git@github.com:saltyshiomix/webpack-typescript-react-starter.git",
+  "author": "Shiono Yoshihide <shiono.yoshihide@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "check-types": "tsc",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --color --progress  --config ./webpack.config.js",
+    "build": "cross-env NODE_ENV=production webpack --color --progress",
+    "serve": "serve dist"
+  },
+  "dependencies": {
+    "comlink": "^4.3.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/preset-typescript": "^7.7.7",
+    "@types/react": "^16.9.46",
+    "@types/react-dom": "^16.9.8",
+    "babel-loader": "^8.0.6",
+    "bundle-loader": "^0.5.6",
+    "concurrently": "^5.2.0",
+    "cross-env": "^6.0.3",
+    "html-webpack-plugin": "^4.3.0",
+    "serve": "^11.3.0",
+    "terser-webpack-plugin": "^3.0.7",
+    "typescript": "^4.0.1-rc",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3",
+    "worker-loader": "^3.0.1"
+  }
+}
