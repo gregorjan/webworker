@@ -1,20 +1,25 @@
-import WebpackWorker from "./webworkers/fetch.worker.ts";
 import React from "react";
+import { Status } from "./enums";
+import FetchWorker from "./webworkers/fetch.worker.ts";
 
-type Data = {
-  data: unknown;
-};
+type Data = { status: string; store: { data: unknown[] } };
+const worker = new FetchWorker();
 
-const worker = new WebpackWorker();
+const getData = () => worker.postMessage("getData");
 
 export const useWebWorker = () => {
-  const [data, setData] = React.useState<Data | null>(null);
+  const [{ status, store }, setData] = React.useState<Data>({
+    status: Status.loading,
+    store: {
+      data: [],
+    },
+  });
   const parseData = ({ data }: MessageEvent<Data>) => setData(data);
 
   React.useEffect(() => {
     worker.onmessage = parseData;
-    worker.postMessage("getData");
+    getData();
   }, []);
 
-  return data;
+  return { status, store, getData };
 };

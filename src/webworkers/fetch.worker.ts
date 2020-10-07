@@ -1,30 +1,44 @@
+import { Status } from "../enums";
+
 type Store = {
-  data?: any;
+  data?: unknown;
 };
 
-let store: Store = {};
+const store: Store = {};
 
-const data = (async () => {
-  return await fetch("https://api.thecatapi.com/v1/images/search")
+const data = () =>
+  fetch("https://api.thecatapi.com/v1/images/search?limit=5&page=10&order=Desc")
     .then((response) => response.json())
     .catch((e) => {
       throw new Error(e);
     });
-})();
 
-self.addEventListener(
-  "message",
-  (e) => {
-    if (e.data === "getData") {
-      if (store.data) {
-        self.postMessage(store.data);
-      } else {
-        data.then((data) => {
-          self.postMessage(data);
-          store = { ...store, data };
-        });
-      }
+type Actions = {
+  getData: () => void;
+};
+
+const actions: Actions = {
+  getData: async () => {
+    data()
+      .then((data) => {
+        store.data = data;
+        self.postMessage({ status: Status.ready, store: store });
+      })
+      .catch(() => ({
+        status: Status.error,
+      }));
+    if (store.data) {
+      self.postMessage({ status: Status.ready, store: store });
     }
   },
-  false
-);
+};
+
+const dispatcher = (e: MessageEvent<keyof Actions>) => {
+  try {
+    actions[e.data]();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+self.addEventListener("message", dispatcher, false);
