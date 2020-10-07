@@ -1,36 +1,20 @@
-import Worker from "worker-loader!./worker.ts";
-import { wrap } from "comlink";
-import { proxy } from "comlink";
+import WebpackWorker from "./webworkers/fetch.worker.ts";
+import React from "react";
 
-const remoteStoreWrapper = async (remoteStore: any) => {
-  const subscribers = new Set();
-
-  let latestState = await remoteStore.getState();
-  remoteStore.subscribe(
-    proxy(async () => {
-      latestState = await remoteStore.getState();
-      subscribers.forEach((f) => f());
-    })
-  );
-  return {
-    dispatch: (action: any) => remoteStore.dispatch(action),
-    getState: () => latestState,
-    subscribe(listener: any) {
-      subscribers.add(listener);
-      return () => subscribers.delete(listener);
-    },
-  };
+type Data = {
+  data: unknown;
 };
 
-let store: any = null;
-
-const run = async () => {
-  const remoteStore = wrap(new Worker());
-  store = await remoteStoreWrapper(remoteStore);
-  console.log("asdf");
-};
+const worker = new WebpackWorker();
 
 export const useWebWorker = () => {
-  run();
-  return store;
+  const [data, setData] = React.useState<Data | null>(null);
+  const parseData = ({ data }: MessageEvent<Data>) => setData(data);
+
+  React.useEffect(() => {
+    worker.onmessage = parseData;
+    worker.postMessage("getData");
+  }, []);
+
+  return data;
 };

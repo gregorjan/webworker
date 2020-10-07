@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "lib": ["webworker", "es6", "dom"],
     "target": "esnext",
     "module": "esnext",
     "jsx": "preserve",

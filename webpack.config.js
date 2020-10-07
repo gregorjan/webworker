@@ -27,7 +27,7 @@ const config = {
       {
         test: /\.worker\.ts$/,
         exclude: /node_modules/,
-        loader: "worker-loader",
+        loader: ["worker-loader", "babel-loader"],
       },
     ],
   },

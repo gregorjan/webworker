@@ -1,4 +1,5 @@
-declare module "worker-loader!*" {
+declare module "*.worker.ts" {
+  //declare var self: Worker;
   class WebpackWorker extends Worker {
     constructor();
   }
